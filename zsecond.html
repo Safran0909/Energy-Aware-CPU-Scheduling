@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AETAS-OS | Execution Timeline Analytics</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=Roboto+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#283646",
+                        "surface-container-low": "#0f1c2c",
+                        "on-secondary": "#621100",
+                        "tertiary-container": "#0f1a2e",
+                        "primary-fixed": "#9cf0ff",
+                        "on-error": "#690005",
+                        "error": "#ffb4ab",
+                        "surface-container-high": "#1e2b3b",
+                        "secondary": "#ffb4a2",
+                        "on-primary": "#00363d",
+                        "surface": "#061423",
+                        "on-primary-container": "#0090a1",
+                        "on-primary-fixed": "#001f24",
+                        "on-tertiary-fixed": "#101b30",
+                        "surface-container": "#132030",
+                        "on-primary-fixed-variant": "#004f58",
+                        "primary": "#00daf3",
+                        "inverse-primary": "#006875",
+                        "primary-container": "#001e22",
+                        "surface-container-highest": "#283646",
+                        "inverse-surface": "#d6e4f9",
+                        "outline-variant": "#44474c",
+                        "tertiary-fixed": "#d7e2ff",
+                        "surface-tint": "#00daf3",
+                        "on-error-container": "#ffdad6",
+                        "tertiary": "#bbc6e2",
+                        "on-background": "#d6e4f9",
+                        "outline": "#8e9196",
+                        "on-secondary-fixed": "#3c0700",
+                        "secondary-container": "#ff562c",
+                        "secondary-fixed-dim": "#ffb4a2",
+                        "on-secondary-container": "#560e00",
+                        "error-container": "#93000a",
+                        "surface-bright": "#2d3a4a",
+                        "surface-container-lowest": "#020f1e",
+                        "on-surface-variant": "#c4c6cc",
+                        "on-surface": "#d6e4f9",
+                        "on-tertiary-fixed-variant": "#3c475d",
+                        "primary-fixed-dim": "#00daf3",
+                        "tertiary-fixed-dim": "#bbc6e2",
+                        "surface-dim": "#061423",
+                        "on-tertiary-container": "#78839c",
+                        "secondary-fixed": "#ffdad2",
+                        "on-tertiary": "#263046",
+                        "inverse-on-surface": "#243141",
+                        "background": "#061423",
+                        "on-secondary-fixed-variant": "#8a1d00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"],
+                        "mono": ["Roboto Mono"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #061423; color: #d6e4f9; }
+        .font-headline { font-family: 'Space Grotesk', sans-serif; }
+        .font-mono { font-family: 'Roboto Mono', monospace; }
+        .glass-panel { background: rgba(30, 43, 59, 0.4); backdrop-filter: blur(12px); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface selection:bg-primary selection:text-on-primary">
+<!-- TopNavBar -->
+<header class="bg-[#061423] dark:bg-[#061423] flex justify-between items-center w-full px-6 py-3 h-16 fixed top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="text-xl font-bold tracking-tighter text-[#00daf3] font-['Space_Grotesk']">THERMAL_INTELLIGENCE</div>
+<nav class="hidden md:flex gap-6">
+<a class="text-slate-400 font-['Space_Grotesk'] tracking-tight hover:bg-[#1e2b3b] transition-colors px-3 py-1 rounded" href="zfirst.html">Cluster View</a>
+<a class="text-slate-400 font-['Space_Grotesk'] tracking-tight hover:bg-[#1e2b3b] transition-colors px-3 py-1 rounded" href="#">Diagnostics</a>
+<a class="text-[#00daf3] border-b-2 border-[#00daf3] pb-1 font-['Space_Grotesk'] tracking-tight" href="#">Logs</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="hidden lg:flex items-center bg-surface-container px-3 py-1.5 rounded-lg border border-outline-variant/15">
+</div>
+</header>
+<!-- SideNavBar -->
+
+<!-- Main Content -->
+<main class="w-full pt-20 p-8 min-h-screen">
+<header class="mb-8">
+<h1 class="text-4xl font-headline font-bold text-on-surface tracking-tight">Execution Timeline Analytics</h1>
+<p class="text-on-surface-variant mt-2 text-sm max-w-2xl">Real-time telemetry stream of sub-millisecond process scheduling and thermal redistribution logic across core clusters.</p>
+</header>
+<section class="glass-panel border-t-2 border-primary/40 rounded-xl p-8 relative shadow-2xl">
+<div class="flex justify-between items-start mb-10">
+<div>
+<h2 class="text-lg font-headline font-bold tracking-[0.2em] text-primary">STEP-BY-STEP EXECUTION TIMELINE</h2>
+<div class="flex items-center gap-4 mt-2">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-primary"></span>
+<span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant">Little Core Cluster</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 rounded-full bg-secondary"></span>
+<span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant">Big Core Cluster</span>
+</div>
+</div>
+</div>
+<!-- Decision Logic Box -->
+<div class="w-64 glass-panel bg-white/5 border border-primary/10 rounded-lg p-4 text-[10px] space-y-2 backdrop-blur-md">
+<div class="flex items-center gap-2 mb-2 text-primary">
+<span class="material-symbols-outlined text-sm">psychology</span>
+<span class="font-bold uppercase tracking-wider">Scheduler Logic Rules</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant/80 border-b border-outline-variant/10 pb-1">
+<span>High Load</span>
+<span class="text-secondary font-mono">-&gt; Big Core</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant/80 border-b border-outline-variant/10 pb-1">
+<span>Temp &gt; 85°C</span>
+<span class="text-error font-mono">-&gt; Throttle</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant/80 border-b border-outline-variant/10 pb-1">
+<span>I/O Wait</span>
+<span class="text-primary font-mono">-&gt; Low Power</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant/80">
+<span>Burst Peak</span>
+<span class="text-secondary font-mono">-&gt; Unmask Core</span>
+</div>
+</div>
+</div>
+<!-- Mini Gantt Timeline -->
+<div class="relative w-full">
+    <div id="time-axis" class="relative h-6 text-[10px] font-mono text-on-surface-variant"></div>
+
+    <div id="gantt-container"
+     class="w-full h-24 bg-black/30 rounded-lg relative overflow-hidden">
+</div>
+</div>
+
+<!-- Execution Logs -->
+<div id="step-container" class="h-[500px] overflow-y-auto no-scrollbar pr-4 space-y-4">
+</div>
+<!-- Absolute positioned decoration -->
+<div class="absolute bottom-4 right-8 flex items-center gap-2">
+<div class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
+<span class="text-[10px] font-mono text-on-surface-variant tracking-[0.3em] uppercase">Telemetry Stream: Active</span>
+</div>
+</section>
+<!-- Dynamic Insights Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+<div class="glass-panel p-6 rounded-lg border border-outline-variant/10">
+<div class="text-[10px] font-bold uppercase tracking-widest text-primary mb-4">Core Utilization Efficiency</div>
+<div id="utilization-value" class="text-3xl font-headline font-medium text-on-surface"></div>
+<div class="mt-4 h-1 bg-surface-container-lowest rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[94.2%]"></div>
+</div>
+<p class="text-[10px] text-on-surface-variant mt-2 italic">Optimal load balancing across efficiency clusters.</p>
+</div>
+<div class="glass-panel p-6 rounded-lg border border-outline-variant/10">
+<div class="text-[10px] font-bold uppercase tracking-widest text-secondary mb-4">Avg. Big Core Temp</div>
+<div id="big-temp" class="text-3xl font-headline font-medium text-secondary"></div>
+<div class="mt-4 h-1 bg-surface-container-lowest rounded-full overflow-hidden">
+<div id="temp-bar" class="h-full bg-secondary"></div>
+</div>
+<p class="text-[10px] text-on-surface-variant mt-2 italic">
+Real-time thermal average across Big cores.
+</p></div>
+<div class="glass-panel p-6 rounded-lg border border-outline-variant/10">
+<div class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-4">System Power Drain</div>
+<div id="power-value" class="text-3xl font-headline font-medium text-on-surface"></div>
+<div class="mt-4 flex gap-1">
+<div class="h-4 w-1 bg-primary"></div>
+<div class="h-4 w-1 bg-primary"></div>
+<div class="h-4 w-1 bg-primary"></div>
+<div class="h-4 w-1 bg-primary/40"></div>
+<div class="h-4 w-1 bg-primary/40"></div>
+<div class="h-4 w-1 bg-primary/40"></div>
+<p id="battery-msg" class="text-[10px] text-on-surface-variant mt-2 italic">
+Real-time power consumption based on core activity.
+</p>
+</div>
+</div>
+</main>
+<script>
+async function runSimulation() {
+
+            const data = JSON.parse(localStorage.getItem("simulationData"));
+
+        if (!data) {
+            alert("No simulation data found. Run simulation first.");
+            return;
+        }
+
+    const container = document.getElementById("step-container");
+    container.innerHTML = "";
+
+
+    function renderStep(log) {
+
+        let predictedHTML = Object.entries(log.predicted_map)
+            .map(([k,v]) => `<div>${k} = ${v}</div>`)
+            .join("");
+
+        let scoreHTML = Object.entries(log.score_map)
+            .map(([k,v]) => `
+                <div class="${k === log.selected ? 'text-primary font-bold' : ''}">
+                    ${k} = ${v} ${k === log.selected ? '← selected' : ''}
+                </div>
+            `).join("");
+
+        return `
+        <div class="p-4 rounded-lg bg-surface-container-high/40 border border-outline-variant/10 font-mono text-xs space-y-1 animate-fadeIn">
+
+            <div class="text-primary">⏱ t = ${log.time}</div>
+
+            <div>Ready Queue: ${log.ready_queue.join(", ")}</div>
+
+            <div class="mt-1">Predicted Burst:</div>
+            ${predictedHTML}
+
+            <div class="mt-1">Effective Score:</div>
+            ${scoreHTML}
+
+            <div class="mt-2 text-green-400">➡ Selected: ${log.selected}</div>
+
+            <div>Core Decision: ${log.core_reason}</div>
+
+            <div>
+                Thermal:
+                BIG ${log.thermal.big}°C |
+                LITTLE ${log.thermal.little}°C
+                → ${log.thermal.status}
+            </div>
+
+            <div class="text-secondary">
+                ➡ Executing ${log.selected} @ ${log.freq} GHz (${log.core})
+            </div>
+
+        </div>
+        `;
+    }
+   function renderGroupedStep(log) {
+    return `
+    <div class="p-4 rounded-lg bg-surface-container-high/40 border border-outline-variant/10 font-mono text-xs animate-fadeIn">
+
+        <div class="text-primary">
+            ⏱ t = ${log.time} → ${log.end}
+        </div>
+
+        <div>Process: ${log.selected}</div>
+
+        <div>
+            Core: ${log.core} @ ${log.freq} GHz
+        </div>
+
+        <div>
+            Thermal:
+            BIG ${log.thermal.big}°C |
+            LITTLE ${log.thermal.little}°C
+        </div>
+
+    </div>
+    `;
+}
+
+    // -------- GROUP LOGS ONCE --------
+    let prev = null;
+
+    function isSameStep(a, b) {
+        return a.selected === b.selected &&
+            a.core === b.core &&
+            a.freq === b.freq;
+    }
+
+    let groupedLogs = [];
+
+    for (let i = 0; i < data.step_logs.length; i++) {
+        let current = data.step_logs[i];
+
+        if (!prev) {
+            prev = { ...current, end: current.time };
+        } else if (isSameStep(prev, current)) {
+            prev.end = current.time;
+        } else {
+            groupedLogs.push(prev);
+            prev = { ...current, end: current.time };
+        }
+    }
+    if (prev) groupedLogs.push(prev);
+    let power = calculatePower(groupedLogs);
+
+document.getElementById("power-value").innerText = power + " W";
+    let avgTemp = calculateBigCoreTemp(groupedLogs);
+    let percent = (avgTemp / 100) * 100; // scale to %
+
+document.getElementById("temp-bar").style.width = percent + "%";
+
+document.getElementById("big-temp").innerText = avgTemp + "°C";
+    let efficiency = calculateUtilization(groupedLogs);
+
+document.getElementById("utilization-value").innerText = efficiency + "%";
+    renderGantt(groupedLogs);
+    renderTimeAxis(groupedLogs);
+
+    // -------- RENDER STEP BY STEP --------
+    let i = 0;
+
+    let interval = setInterval(() => {
+
+        if (i >= groupedLogs.length) {
+            clearInterval(interval);
+            return;
+        }
+
+        container.innerHTML += renderGroupedStep(groupedLogs[i]);
+
+        container.scrollTop = container.scrollHeight;
+
+        i++;
+
+    }, 400);
+    }
+
+    function renderGantt(groupedLogs) {
+    const gantt = document.getElementById("gantt-container");
+    gantt.innerHTML = "";
+
+   let minTime = groupedLogs[0].time;
+let maxTime = groupedLogs[groupedLogs.length - 1].end;
+let totalTime = maxTime - minTime;
+    groupedLogs.forEach(log => {
+
+        let startPercent = ((log.time - minTime) / totalTime) * 100;
+let widthPercent = ((log.end - log.time + 1) / totalTime) * 100;
+
+        let color = log.core === "Big" ? "bg-secondary" : "bg-primary";
+
+        let block = document.createElement("div");
+
+        block.className = `${color} text-black text-[10px] font-mono flex items-center justify-center absolute`;
+
+        block.style.left = startPercent + "%";   // 🔥 KEY FIX
+        block.style.width = widthPercent + "%";
+        block.style.height = "100%";   // full height
+block.style.top = "0";         // no vertical shift
+block.style.transform = "none";
+block.style.minWidth = "8px";
+block.style.borderRight = "1px solid #061423";
+
+        block.innerText = log.selected;
+
+        gantt.appendChild(block);
+    });
+}
+function renderTimeAxis(groupedLogs) {
+    const axis = document.getElementById("time-axis");
+    axis.innerHTML = "";
+
+    let minTime = groupedLogs[0].time;
+    let maxTime = groupedLogs[groupedLogs.length - 1].end;
+    let totalTime = maxTime - minTime;
+
+    // 🔥 Use REAL execution points
+    let times = new Set();
+
+    groupedLogs.forEach(log => {
+        times.add(log.time);
+    });
+
+    let sortedTimes = Array.from(times).sort((a,b) => a-b);
+
+    sortedTimes.forEach(t => {
+
+        let pos = ((t - minTime) / totalTime) * 100;
+
+        let label = document.createElement("div");
+
+        label.innerText = `t=${t}`;
+        label.style.position = "absolute";
+        label.style.left = pos + "%";
+        label.style.fontSize = "10px";
+        label.style.transform = "translateX(0)";
+
+        axis.appendChild(label);
+    });
+}
+function calculateUtilization(groupedLogs) {
+
+    let minTime = groupedLogs[0].time;
+    let maxTime = groupedLogs[groupedLogs.length - 1].end;
+
+    let totalTime = maxTime - minTime;
+
+    let busyTime = 0;
+
+    groupedLogs.forEach(log => {
+        busyTime += (log.end - log.time);
+    });
+
+    let efficiency = (busyTime / totalTime) * 100;
+
+    return efficiency.toFixed(1);
+}
+function calculateBigCoreTemp(groupedLogs) {
+
+    let totalTemp = 0;
+    let count = 0;
+
+    groupedLogs.forEach(log => {
+        if (log.core === "Big") {
+            totalTemp += log.thermal.big;
+            count++;
+        }
+    });
+
+    if (count === 0) return 0;
+
+    return (totalTemp / count).toFixed(1);
+}
+function calculatePower(groupedLogs) {
+
+    let totalEnergy = 0;
+
+    groupedLogs.forEach(log => {
+        let duration = log.end - log.time + 1;
+
+        let freq = log.freq; // already numeric
+
+        totalEnergy += (freq * freq) * duration;
+    });
+
+    // scale to "Watts" (visual)
+    let power = totalEnergy / 10;
+
+    return power.toFixed(1);
+}
+runSimulation();
+</script>
+</body></html>

@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AETAS-OS | Thermal Intelligence Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=Roboto+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed-variant": "#3c475d",
+                        "primary-container": "#001e22",
+                        "surface-bright": "#2d3a4a",
+                        "primary-fixed": "#9cf0ff",
+                        "outline": "#8e9196",
+                        "surface-variant": "#283646",
+                        "surface-container": "#132030",
+                        "secondary-container": "#ff562c",
+                        "inverse-surface": "#d6e4f9",
+                        "on-primary": "#00363d",
+                        "tertiary": "#bbc6e2",
+                        "on-tertiary-fixed": "#101b30",
+                        "outline-variant": "#44474c",
+                        "error": "#ffb4ab",
+                        "inverse-on-surface": "#243141",
+                        "primary": "#00daf3",
+                        "tertiary-fixed": "#d7e2ff",
+                        "on-surface": "#d6e4f9",
+                        "on-secondary": "#621100",
+                        "on-primary-fixed": "#001f24",
+                        "error-container": "#93000a",
+                        "tertiary-container": "#0f1a2e",
+                        "on-surface-variant": "#c4c6cc",
+                        "primary-fixed-dim": "#00daf3",
+                        "on-error-container": "#ffdad6",
+                        "surface-dim": "#061423",
+                        "surface-tint": "#00daf3",
+                        "surface-container-highest": "#283646",
+                        "on-secondary-fixed": "#3c0700",
+                        "on-secondary-fixed-variant": "#8a1d00",
+                        "surface": "#061423",
+                        "on-primary-container": "#0090a1",
+                        "on-error": "#690005",
+                        "on-secondary-container": "#560e00",
+                        "inverse-primary": "#006875",
+                        "surface-container-high": "#1e2b3b",
+                        "secondary": "#ffb4a2",
+                        "surface-container-low": "#0f1c2c",
+                        "on-tertiary": "#263046",
+                        "secondary-fixed-dim": "#ffb4a2",
+                        "tertiary-fixed-dim": "#bbc6e2",
+                        "background": "#061423",
+                        "surface-container-lowest": "#020f1e",
+                        "on-primary-fixed-variant": "#004f58",
+                        "on-background": "#d6e4f9",
+                        "secondary-fixed": "#ffdad2",
+                        "on-tertiary-container": "#78839c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-headline { font-family: 'Space Grotesk', sans-serif; }
+        .font-mono { font-family: 'Roboto Mono', monospace; }
+        .glass-panel { backdrop-filter: blur(12px); background: rgba(30, 43, 59, 0.7); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface overflow-hidden">
+<!-- Top Navigation Anchor (Based on JSON) -->
+<header class="bg-[#061423] text-[#00daf3] font-['Space_Grotesk'] tracking-tight flex justify-between items-center w-full px-6 py-3 h-16 fixed top-0 z-50">
+<div class="flex items-center gap-8">
+<div class="text-xl font-bold tracking-tighter text-[#00daf3]">THERMAL_INTELLIGENCE</div>
+<nav class="hidden md:flex gap-6 items-center">
+<a class="text-[#00daf3] border-b-2 border-[#00daf3] pb-1" href="#">Cluster View</a>
+<a class="text-slate-400 hover:bg-[#1e2b3b] transition-colors px-2 py-1 rounded" href="#">Diagnostics</a>
+<a class="text-slate-400 hover:bg-[#1e2b3b] transition-colors px-2 py-1 rounded" href="zsecond.html">Logs</a>
+</nav>
+</div>
+</header>
+<div class="flex h-screen pt-16">
+<!-- Sidebar: Workload Parameters (Fixed Left) -->
+<aside class="w-80 bg-[#0f1c2c] border-r border-[#1e2b3b]/15 h-full flex flex-col p-4 z-40">
+<div class="flex items-center gap-2 mb-6 px-2">
+<span class="text-lg">⚙️</span>
+<h2 class="font-headline font-bold text-sm uppercase tracking-widest text-on-surface-variant">Workload Parameters</h2>
+</div>
+<div class="flex-grow overflow-auto no-scrollbar">
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden border border-outline-variant/10">
+<table class="w-full text-xs font-mono text-left">
+<thead>
+<tr class="bg-surface-container-high text-on-surface-variant">
+<th class="px-3 py-3 font-medium">PID</th>
+<th class="px-3 py-3 font-medium">ARR</th>
+<th class="px-3 py-3 font-medium">BURST</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+
+<tr class="hover:bg-surface-container-high/50 transition-colors">
+<td class="px-3 py-3 text-primary">
+    <input type="number" value="1" class="bg-transparent w-full outline-none"/>
+</td>
+<td class="px-3 py-3">
+    <input type="number" value="0" class="bg-transparent w-full outline-none"/>
+</td>
+<td class="px-3 py-3">
+    <input type="number" value="12" class="bg-transparent w-full outline-none"/>
+</td>
+</tr>
+
+<tr class="hover:bg-surface-container-high/50 transition-colors">
+<td class="px-3 py-3 text-primary">
+    <input type="number" value="2" class="bg-transparent w-full outline-none"/>
+</td>
+<td class="px-3 py-3">
+    <input type="number" value="2" class="bg-transparent w-full outline-none"/>
+</td>
+<td class="px-3 py-3">
+    <input type="number" value="8" class="bg-transparent w-full outline-none"/>
+</td>
+</tr>
+
+<tr class="hover:bg-surface-container-high/50 transition-colors">
+<td class="px-3 py-3 text-primary">
+    <input type="number" value="3" class="bg-transparent w-full outline-none"/>
+</td>
+<td class="px-3 py-3">
+    <input type="number" value="4" class="bg-transparent w-full outline-none"/>
+</td>
+<td class="px-3 py-3">
+    <input type="number" value="24" class="bg-transparent w-full outline-none"/>
+</td>
+</tr>
+
+<tr class="hover:bg-surface-container-high/50 transition-colors">
+<td class="px-3 py-3 text-primary">
+    <input type="number" value="4" class="bg-transparent w-full outline-none"/>
+</td>
+<td class="px-3 py-3">
+    <input type="number" value="5" class="bg-transparent w-full outline-none"/>
+</td>
+<td class="px-3 py-3">
+    <input type="number" value="4" class="bg-transparent w-full outline-none"/>
+</td>
+</tr>
+
+<tr class="hover:bg-surface-container-high/50 transition-colors">
+<td class="px-3 py-3 text-primary">
+    <input type="number" value="5" class="bg-transparent w-full outline-none"/>
+</td>
+<td class="px-3 py-3">
+    <input type="number" value="7" class="bg-transparent w-full outline-none"/>
+</td>
+<td class="px-3 py-3">
+    <input type="number" value="18" class="bg-transparent w-full outline-none"/>
+</td>
+</tr>
+
+<tr class="hover:bg-surface-container-high/50 transition-colors">
+<td class="px-3 py-3 text-primary">
+    <input type="number" value="6" class="bg-transparent w-full outline-none"/>
+</td>
+<td class="px-3 py-3">
+    <input type="number" value="9" class="bg-transparent w-full outline-none"/>
+</td>
+<td class="px-3 py-3">
+    <input type="number" value="11" class="bg-transparent w-full outline-none"/>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="flex gap-2 mt-3">
+
+<button onclick="addRow()" 
+class="flex-1 text-xs text-primary border border-primary/30 rounded py-2 hover:bg-primary/10">
+➕ Add Process
+</button>
+
+<button onclick="removeRow()" 
+class="flex-1 text-xs text-red-400 border border-red-400/30 rounded py-2 hover:bg-red-400/10">
+➖ Remove Last
+</button>
+
+</div>
+</div>
+</div>
+<div class="mt-6">
+<button 
+onclick="runSimulation()"
+class="w-full py-4 rounded-xl font-headline font-bold text-sm tracking-widest bg-gradient-to-r from-primary to-on-primary-container text-on-primary shadow-lg shadow-primary/20 hover:scale-[0.98] transition-transform flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-base">rocket_launch</span>
+EXECUTE SIMULATION
+</button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-grow overflow-y-auto p-8 bg-surface-dim">
+<!-- Top Row: Metric Cards -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+<!-- Energy Card -->
+<div class="bg-surface-container-high rounded-xl p-6 relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-full h-0.5 bg-primary"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-xs font-medium uppercase tracking-wider text-on-surface-variant">Total Energy Consumption</span>
+<span class="material-symbols-outlined text-primary text-xl">bolt</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-headline font-bold">142.8</span>
+<span class="text-sm font-mono text-on-surface-variant">mWh</span>
+</div>
+<div class="mt-4 flex items-center gap-2 text-xs">
+<span id="energy-change" class="text-primary flex items-center font-bold">
+<span class="material-symbols-outlined text-sm">arrow_downward</span> 18.4%
+                        </span>
+<span class="text-on-surface-variant/60 italic">vs FCFS Baseline</span>
+</div>
+</div>
+<!-- Turnaround Card -->
+<div class="bg-surface-container-high rounded-xl p-6 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-0.5 bg-primary"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-xs font-medium uppercase tracking-wider text-on-surface-variant">Avg Turnaround Time</span>
+<span class="material-symbols-outlined text-primary text-xl">timer</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-headline font-bold">34.2</span>
+<span class="text-sm font-mono text-on-surface-variant">ms</span>
+</div>
+<div class="mt-4 flex items-center gap-2 text-xs">
+<span id="turnaround-change" class="text-primary flex items-center font-bold">
+<span class="material-symbols-outlined text-sm">arrow_downward</span> 12.1%
+</span>
+<span class="text-on-surface-variant/60 italic">vs FCFS Baseline</span>
+</div>
+</div>
+<!-- Efficiency Card -->
+<div class="bg-surface-container-high rounded-xl p-6 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-0.5 bg-primary"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="text-xs font-medium uppercase tracking-wider text-on-surface-variant">Scheduling Efficiency</span>
+<span class="material-symbols-outlined text-primary text-xl">speed</span>
+</div>
+<div class="flex items-baseline gap-2">
+<span class="text-4xl font-headline font-bold">96.4</span>
+<span class="text-sm font-mono text-on-surface-variant">%</span>
+</div>
+<div class="mt-4 flex items-center gap-2 text-xs">
+<span id="efficiency-change" class="flex items-center font-bold"></span>
+<span class="text-on-surface-variant/60 italic">vs FCFS Baseline</span>
+</div>
+</div>
+</div>
+<!-- Tab Navigation -->
+<div class="flex gap-8 border-b border-outline-variant/15 mb-8">
+<button class="pb-4 text-primary border-b-2 border-primary font-medium text-sm transition-all">Performance Benchmarks</button>
+<button class="pb-4 text-on-surface-variant hover:text-on-surface font-medium text-sm transition-all">Thermal &amp; Core Analytics</button>
+<button class="pb-4 text-on-surface-variant hover:text-on-surface font-medium text-sm transition-all">Execution Logs</button>
+</div>
+<!-- Dashboard Content: Performance Benchmarks (Active) -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Waiting Time Comparison -->
+<div class="bg-surface-container rounded-xl p-6">
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-6">
+Waiting Time Comparison (ms)
+</h3>
+
+<div class="space-y-4">
+
+<div>
+<div class="flex justify-between text-xs mb-1 uppercase font-mono">
+<span>FCFS</span>
+<span id="fcfs-wait" class="text-on-surface-variant">42ms</span>
+</div>
+<div class="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div id="fcfs-bar" class="h-full bg-slate-500" style="width: 85%"></div>
+</div>
+</div>
+
+<div>
+<div class="flex justify-between text-xs mb-1 uppercase font-mono">
+<span>SJF</span>
+<span id="sjf-wait" class="text-on-surface-variant">36ms</span>
+</div>
+<div class="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div id="sjf-bar" class="h-full bg-tertiary" style="width: 72%"></div>
+</div>
+</div>
+
+<div>
+<div class="flex justify-between text-xs mb-1 uppercase font-mono">
+<span>AETAS</span>
+<span id="aetas-wait" class="text-primary">24ms</span>
+</div>
+<div class="w-full h-2 bg-surface-container-highest rounded-full overflow-hidden">
+<div id="aetas-bar" class="h-full bg-primary" style="width: 48%"></div>
+</div>
+</div>
+
+</div>
+</div>
+<!-- Energy Efficiency (J) -->
+<div class="bg-surface-container rounded-xl p-6">
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-6">Power Draw (mW)</h3>
+<div class="flex items-end gap-4 h-32 px-4">
+<div id="fcfs-power-bar" class="flex-1 bg-secondary opacity-30 rounded-t h-[90%] relative group">
+<span id="fcfs-power-text" class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-mono opacity-0 group-hover:opacity-100 transition-opacity">820</span>
+</div>
+
+<div id="sjf-power-bar" class="flex-1 bg-secondary opacity-60 rounded-t h-[75%] relative group">
+<span id="sjf-power-text" class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-mono opacity-0 group-hover:opacity-100 transition-opacity">680</span>
+</div>
+
+<div id="aetas-power-bar" class="flex-1 bg-primary rounded-t h-[50%] relative group">
+<span id="aetas-power-text" class="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-mono opacity-0 group-hover:opacity-100 transition-opacity">450</span>
+</div>
+
+</div>  
+<div class="flex gap-4 mt-4 px-4 text-[10px] font-mono text-on-surface-variant">
+<span class="flex-1 text-center">FCFS</span>
+<span class="flex-1 text-center">SJF</span>
+<span class="flex-1 text-center text-primary">AETAS</span>
+</div>
+</div>
+<!-- Optimization Vector -->
+<div class="bg-surface-container rounded-xl p-6 flex flex-col justify-center items-center text-center">
+<div class="w-24 h-24 rounded-full border-4 border-primary/20 border-t-primary flex items-center justify-center mb-4">
+<span id="efficiency-text" class="text-2xl font-headline font-bold text-primary">92%</span>
+</div>
+<h4 class="text-sm font-bold uppercase tracking-wider mb-2">Thermal Efficiency</h4>
+<p class="text-xs text-on-surface-variant max-w-[200px]">AETAS successfully mitigated 3 thermal spikes in core 0-3.</p>
+</div>
+<!-- Thermal & Core Analytics Visualization -->
+<div class="lg:col-span-2 bg-surface-container rounded-xl p-6 overflow-hidden">
+
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">
+Live Thermal Telemetry
+</h3>
+
+<div class="flex gap-4 text-[10px] font-mono">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-secondary"></span> BIG_CORE_0
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary"></span> LITTLE_CORE_4
+</div>
+</div>
+</div>
+
+<!-- ✅ EMPTY CONTAINER (IMPORTANT) -->
+<div id="thermal-container" class="h-48 relative flex items-end gap-1 bg-black/20"></div>
+
+</div>
+<!-- Core Usage Distribution -->
+<div class="bg-surface-container rounded-xl p-6">
+<h3 class="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-6">Resource Allocation</h3>
+<div class="flex flex-col gap-6">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full border-2 border-secondary flex items-center justify-center font-mono text-[10px]">35%</div>
+<div>
+<div class="text-xs font-bold">Performance Cluster</div>
+<div class="text-[10px] text-on-surface-variant">Cores 0-3 (Cortex-X2)</div>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full border-2 border-primary flex items-center justify-center font-mono text-[10px]">65%</div>
+<div>
+<div class="text-xs font-bold">Efficiency Cluster</div>
+<div class="text-[10px] text-on-surface-variant">Cores 4-7 (Cortex-A510)</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Section: Execution Logs -->
+<div class="mt-8 bg-surface-container rounded-xl overflow-hidden border border-outline-variant/10">
+<div class="px-6 py-4 bg-surface-container-high flex justify-between items-center">
+<h3 class="text-xs font-bold uppercase tracking-widest">CORE ASSIGNMENT SUMMARY</h3>
+<div class="flex gap-2">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-[10px] font-mono text-on-surface-variant">LISTENING_NODE_0018</span>
+</div>
+</div>
+<table class="w-full text-xs font-mono text-left">
+<thead>
+<tr class="text-on-surface-variant border-b border-outline-variant/10">
+<th class="px-6 py-3 font-medium">PID</th>
+<th class="px-6 py-3 font-medium">TARGET CORE</th>
+<th class="px-6 py-3 font-medium">ASSIGNED FREQUENCY</th>
+<th class="px-6 py-3 font-medium">STATUS</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/5">
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-4 text-primary">P_001</td>
+<td class="px-6 py-4">LITTLE_CORE_4</td>
+<td class="px-6 py-4">1.2 GHz</td>
+<td class="px-6 py-4"><span class="px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 text-[10px]">EXECUTED</span></td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-4 text-primary">P_003</td>
+<td class="px-6 py-4">BIG_CORE_0</td>
+<td class="px-6 py-4">2.8 GHz</td>
+<td class="px-6 py-4"><span class="px-2 py-0.5 rounded bg-secondary/10 text-secondary border border-secondary/20 text-[10px]">HOT_PATH</span></td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-4 text-primary">P_002</td>
+<td class="px-6 py-4">LITTLE_CORE_5</td>
+<td class="px-6 py-4">1.1 GHz</td>
+<td class="px-6 py-4"><span class="px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 text-[10px]">EXECUTED</span></td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="px-6 py-4 text-primary">P_005</td>
+<td class="px-6 py-4">BIG_CORE_2</td>
+<td class="px-6 py-4">2.4 GHz</td>
+<td class="px-6 py-4"><span class="px-2 py-0.5 rounded bg-surface-container-highest text-on-surface-variant border border-outline-variant/30 text-[10px]">QUEUED</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</main>
+</div>
+<script>
+async function runSimulation() {
+    
+
+    try {
+        // ---------------- GET INPUT DATA ----------------
+        const rows = document.querySelector("aside table tbody").querySelectorAll("tr");
+        let processes = [];
+
+        rows.forEach(row => {
+            const inputs = row.querySelectorAll("input");
+
+            if (inputs.length === 3) {
+                processes.push({
+                    pid: parseInt(inputs[0].value),
+                    arrival: parseInt(inputs[1].value),
+                    burst: parseInt(inputs[2].value)
+                });
+            }
+        });
+
+        console.log("INPUT:", processes);
+
+        // ---------------- API CALL ----------------
+        const res = await fetch("http://127.0.0.1:8000/simulate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(processes)
+        });
+
+        const data = await res.json();
+                // store result globally
+        localStorage.setItem("simulationData", JSON.stringify(data));
+
+        // redirect to timeline page
+        console.log("THERMAL:", data.thermal);
+        const metrics = document.querySelectorAll(".text-4xl");
+        // ---------------- ENERGY CARD FIX ----------------
+
+        // values
+        let fcfs_energy = data.fcfs_energy;
+        let aetas_energy = data.energy;
+
+        // calculate improvement %
+      // ---------------- ENERGY CHANGE ----------------
+        let energyImprove = ((data.fcfs_energy - data.energy) / data.fcfs_energy) * 100;
+
+        let icon = "arrow_downward";
+        let color = "text-primary";
+
+        if (energyImprove < 0) {
+            icon = "arrow_upward";
+            color = "text-red-400";
+            energyImprove = Math.abs(energyImprove);
+        }
+
+        document.getElementById("energy-change").innerHTML =
+        `<span class="material-symbols-outlined text-sm">${icon}</span> ${energyImprove.toFixed(1)}%`;
+
+        document.getElementById("energy-change").className =
+        `flex items-center font-bold ${color}`;
+
+                // ---------------- TURNAROUND CHANGE ----------------
+        let turnImprove = ((data.turnaround.fcfs - data.turnaround.aetas) / data.turnaround.fcfs) * 100;
+
+        // fix precision issue
+        if (Math.abs(turnImprove) < 0.01) turnImprove = 0;
+
+        let tIcon = "arrow_downward";
+        let tColor = "text-primary";
+
+        if (turnImprove < 0) {
+            tIcon = "arrow_upward";
+            tColor = "text-red-400";
+            turnImprove = Math.abs(turnImprove);
+        }
+
+        document.getElementById("turnaround-change").innerHTML =
+        `<span class="material-symbols-outlined text-sm">${tIcon}</span> ${turnImprove.toFixed(1)}%`;
+
+        document.getElementById("turnaround-change").className =
+        `flex items-center font-bold ${tColor}`;
+                // ---------------- EFFICIENCY CHANGE ----------------
+        let totalUsage = data.efficiency.Big + data.efficiency.Little;
+        let effPercent = (data.efficiency.Little / totalUsage) * 100;
+
+        // compare vs baseline 50%
+        let effImprove = effPercent - 50;
+
+        let eIcon = effImprove >= 0 ? "arrow_upward" : "arrow_downward";
+        let eColor = effImprove >= 0 ? "text-primary" : "text-red-400";
+
+        document.getElementById("efficiency-change").innerHTML =
+        `<span class="material-symbols-outlined text-sm">${eIcon}</span> ${Math.abs(effImprove).toFixed(1)}%`;
+
+        document.getElementById("efficiency-change").className =
+        `flex items-center font-bold ${eColor}`;
+
+        // update UI
+                // ---------------- POWER DRAW ----------------
+
+                // use real energy values
+                let fcfs = data.fcfs_energy;
+                let aetas = data.energy;
+                let sjf = data.sjf_energy || 0;
+
+                // normalize for height
+                let maxPower = Math.max(fcfs, sjf, aetas);
+
+                // update heights
+                document.getElementById("fcfs-power-bar").style.height = (fcfs/maxPower * 100) + "%";
+                document.getElementById("sjf-power-bar").style.height = (sjf/maxPower * 100) + "%";
+                document.getElementById("aetas-power-bar").style.height = (aetas/maxPower * 100) + "%";
+
+                // update values (tooltip numbers)
+                document.getElementById("fcfs-power-text").innerText = Math.round(fcfs);
+                document.getElementById("sjf-power-text").innerText = Math.round(sjf);
+                document.getElementById("aetas-power-text").innerText = Math.round(aetas);
+
+        // ---------------- THERMAL EFFICIENCY ----------------
+
+        // calculate efficiency from core usage
+        let total = data.efficiency.Big + data.efficiency.Little;
+        let eff = (data.efficiency.Little / total) * 100;
+
+        // update UI
+        document.getElementById("efficiency-text").innerText = Math.round(eff) + "%";
+
+        // ---------------- WAITING TIME ----------------
+       const w = data.waiting;
+
+        let fcfs_wait = w.fcfs;
+        let sjf_wait = w.sjf;
+        let aetas_wait = w.aetas;
+
+        // update text
+        document.getElementById("fcfs-wait").innerText = Math.round(fcfs_wait) + "ms";
+        document.getElementById("sjf-wait").innerText = Math.round(sjf_wait) + "ms";
+        document.getElementById("aetas-wait").innerText = Math.round(aetas_wait) + "ms";
+
+        // normalize
+        let maxWait = Math.max(fcfs_wait, sjf_wait, aetas_wait);
+
+        // update bars
+        document.getElementById("fcfs-bar").style.width = (fcfs_wait/maxWait * 100) + "%";
+        document.getElementById("sjf-bar").style.width = (sjf_wait/maxWait * 100) + "%";
+        document.getElementById("aetas-bar").style.width = (aetas_wait/maxWait * 100) + "%";
+                console.log("RESULT:", data);
+
+        // ---------------- UPDATE METRICS ----------------
+
+        // Energy
+        metrics[0].innerText = data.energy.toFixed(1);
+
+        // Turnaround
+        metrics[1].innerText = data.turnaround.aetas.toFixed(1);
+
+        // Efficiency %
+        metrics[2].innerText = eff.toFixed(1);
+
+
+          // ---------------- LIVE THERMAL     TELEMETRY ----------------
+           // ---------------- LIVE THERMAL TELEMETRY ----------------
+            const thermalContainer = document.getElementById("thermal-container");
+thermalContainer.innerHTML = "";
+
+let maxTemp = Math.max(...data.thermal.map(t => Math.max(t.big, t.little)));
+
+let tIndex = 0;
+
+let interval = setInterval(() => {
+
+    if (tIndex >= data.thermal.length) {
+        clearInterval(interval);
+        return;
+    }
+
+    const t = data.thermal[tIndex];
+
+   let bigHeight = (t.big - 20) * 3;
+let littleHeight = (t.little - 20) * 3;
+
+// clamp values (important)
+bigHeight = Math.max(5, Math.min(bigHeight, 100));
+littleHeight = Math.max(5, Math.min(littleHeight, 100));
+
+    const column = document.createElement("div");
+    column.className = "w-3 flex flex-col justify-end gap-[2px]";
+
+    const bigDiv = document.createElement("div");
+    bigDiv.className = "bg-red-500 rounded-sm";
+    bigDiv.style.height = bigHeight + "px";
+
+    const littleDiv = document.createElement("div");
+    littleDiv.className = "bg-blue-500 rounded-sm";
+    littleDiv.style.height = littleHeight + "px";
+
+    column.appendChild(bigDiv);
+    column.appendChild(littleDiv);
+    thermalContainer.appendChild(column);
+
+    tIndex++;
+
+}, 100);
+
+        // ---------------- UPDATE LOG TABLE ----------------
+       const logTable = document.querySelector("main .mt-8 table tbody");
+        logTable.innerHTML = "";
+        let i = 0;
+// ✅ CREATE UNIQUE PROCESS MAP
+let mapping = {};
+
+data.logs.forEach(log => {
+    if (!mapping[log.pid]) {
+        mapping[log.pid] = log;
+    }
+});
+
+// ✅ SORT BY PID
+let sorted = Object.values(mapping).sort((a, b) => {
+    return Number(a.pid) - Number(b.pid);
+});
+
+
+let logInterval = setInterval(() => {
+
+    if (i >= sorted.length) {
+        clearInterval(logInterval);
+        return;
+    }
+
+    const log = sorted[i];
+
+    logTable.innerHTML += `
+    <tr class="hover:bg-surface-container-high transition-colors">
+        <td class="px-6 py-4 text-primary">P${log.pid}</td>
+        <td class="px-6 py-4">
+            ${log.core === "Big" ? "BIG_CORE_0" : "LITTLE_CORE_4"}
+        </td>
+        <td class="px-6 py-4">${log.freq}</td>
+        <td class="px-6 py-4">
+            <span class="px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 text-[10px]">
+                EXECUTED
+            </span>
+        </td>
+    </tr>`;
+
+    i++;
+
+}, 200);
+
+                  
+        // ---------------- UPDATE PERFORMANCE BARS ----------------
+
+    } catch (error) {
+        console.error("ERROR:", error);
+        alert("Something went wrong. Check console.");
+    }
+}
+// add row remove row 
+function addRow() {
+    const tbody = document.querySelector("aside table tbody");
+
+    const rowCount = tbody.children.length + 1;
+
+    const row = document.createElement("tr");
+    row.className = "hover:bg-surface-container-high/50 transition-colors";
+
+    row.innerHTML = `
+    <td class="px-3 py-3 text-primary">
+        <input type="number" value="${rowCount}" class="bg-transparent w-full outline-none"/>
+    </td>
+    <td class="px-3 py-3">
+        <input type="number" placeholder="Arrival" class="bg-transparent w-full outline-none"/>
+    </td>
+    <td class="px-3 py-3">
+        <input type="number" placeholder="Burst" class="bg-transparent w-full outline-none"/>
+    </td>
+    `;
+
+    tbody.appendChild(row);
+}
+
+
+// ➖ REMOVE ROW
+function removeRow() {
+    const tbody = document.querySelector("aside table tbody");
+
+    if (tbody.children.length > 1) {
+        tbody.removeChild(tbody.lastElementChild);
+    } else {
+        alert("At least one process is required.");
+    }
+}
+// ---------------- WAITING TIME (DYNAMIC) ----------------
+
+// ---------------- WAITING TIME ----------------
+</script>
+</body></html>
