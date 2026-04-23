@@ -1,474 +1,684 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>AETAS-OS | Execution Timeline</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=IBM+Plex+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    <html class="dark" lang="en"><head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>AETAS-OS | Execution Timeline Analytics</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;family=Roboto+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
-    <script id="tailwind-config">
-            tailwind.config = {
-                darkMode: "class",
-                theme: {
-                    extend: {
-                        "colors": {
-                            "surface-variant": "#283646",
-                            "surface-container-low": "#0f1c2c",
-                            "on-secondary": "#621100",
-                            "tertiary-container": "#0f1a2e",
-                            "primary-fixed": "#9cf0ff",
-                            "on-error": "#690005",
-                            "error": "#ffb4ab",
-                            "surface-container-high": "#1e2b3b",
-                            "secondary": "#ffb4a2",
-                            "on-primary": "#00363d",
-                            "surface": "#061423",
-                            "on-primary-container": "#0090a1",
-                            "on-primary-fixed": "#001f24",
-                            "on-tertiary-fixed": "#101b30",
-                            "surface-container": "#132030",
-                            "on-primary-fixed-variant": "#004f58",
-                            "primary": "#00daf3",
-                            "inverse-primary": "#006875",
-                            "primary-container": "#001e22",
-                            "surface-container-highest": "#283646",
-                            "inverse-surface": "#d6e4f9",
-                            "outline-variant": "#44474c",
-                            "tertiary-fixed": "#d7e2ff",
-                            "surface-tint": "#00daf3",
-                            "on-error-container": "#ffdad6",
-                            "tertiary": "#bbc6e2",
-                            "on-background": "#d6e4f9",
-                            "outline": "#8e9196",
-                            "on-secondary-fixed": "#3c0700",
-                            "secondary-container": "#ff562c",
-                            "secondary-fixed-dim": "#ffb4a2",
-                            "on-secondary-container": "#560e00",
-                            "error-container": "#93000a",
-                            "surface-bright": "#2d3a4a",
-                            "surface-container-lowest": "#020f1e",
-                            "on-surface-variant": "#c4c6cc",
-                            "on-surface": "#d6e4f9",
-                            "on-tertiary-fixed-variant": "#3c475d",
-                            "primary-fixed-dim": "#00daf3",
-                            "tertiary-fixed-dim": "#bbc6e2",
-                            "surface-dim": "#061423",
-                            "on-tertiary-container": "#78839c",
-                            "secondary-fixed": "#ffdad2",
-                            "on-tertiary": "#263046",
-                            "inverse-on-surface": "#243141",
-                            "background": "#061423",
-                            "on-secondary-fixed-variant": "#8a1d00"
-                        },
-                        "borderRadius": {
-                            "DEFAULT": "0.125rem",
-                            "lg": "0.25rem",
-                            "xl": "0.5rem",
-                            "full": "0.75rem"
-                        },
-                        "fontFamily": {
-                            "headline": ["Space Grotesk"],
-                            "body": ["Inter"],
-                            "label": ["Inter"],
-                            "mono": ["Roboto Mono"]
-                        }
-                    },
-                },
-            }
-        </script>
-    <style>
-            body { font-family: 'Inter', sans-serif; background-color: #061423; color: #d6e4f9; }
-            .font-headline { font-family: 'Space Grotesk', sans-serif; }
-            .font-mono { font-family: 'Roboto Mono', monospace; }
-            .glass-panel { background: rgba(30, 43, 59, 0.4); backdrop-filter: blur(12px); }
-            .no-scrollbar::-webkit-scrollbar { display: none; }
-            .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-            .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; vertical-align: middle; }
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(5px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-            .animate-fadeIn {
-                animation: fadeIn 0.3s ease;
-            }
-        </style>
-    </head>
-    <body class="bg-surface text-on-surface selection:bg-primary selection:text-on-primary">
-    <!-- TopNavBar -->
-    <header class="bg-[#061423] dark:bg-[#061423] flex justify-between items-center w-full px-6 py-3 h-16 fixed top-0 z-50">
-    <div class="flex items-center gap-8">
-    <div class="text-xl font-bold tracking-tighter text-[#00daf3] font-['Space_Grotesk']">AETAS-OS Scheduler Analytics</div>
-    <nav class="hidden md:flex gap-6">
-    <a class="text-slate-400 font-['Space_Grotesk'] tracking-tight hover:bg-[#1e2b3b] transition-colors px-3 py-1 rounded" href="zfirst.html">Cluster View</a>
-    <a class="text-slate-400 font-['Space_Grotesk'] tracking-tight hover:bg-[#1e2b3b] transition-colors px-3 py-1 rounded" href="#">Diagnostics</a>
-    <a class="text-[#00daf3] border-b-2 border-[#00daf3] pb-1 font-['Space_Grotesk'] tracking-tight" href="#">Logs</a>
+  :root {
+    --bg: #080808;
+    --surface: #111111;
+    --surface-2: #181818;
+    --surface-3: #222222;
+    --border: rgba(255,255,255,0.07);
+    --border-bright: rgba(255,255,255,0.15);
+    --white: #FFFFFF;
+    --silver: #E2E8F0;
+    --silver-dim: #94A3B8;
+    --silver-grad: linear-gradient(135deg, #F8FAFC 0%, #94A3B8 100%);
+    --danger: #ff4444;
+    --success: #aaffaa;
+    --warn: #ffcc44;
+    --mono: 'IBM Plex Mono', monospace;
+    --serif: 'DM Serif Display', serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  html, body { height: 100%; }
+
+  body {
+    background: var(--bg);
+    color: var(--silver);
+    font-family: var(--sans);
+    font-size: 13px;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 0; opacity: 0.35;
+  }
+
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 2px; }
+
+  /* ── TOPBAR ── */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    height: 48px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+  }
+
+  .topbar-left { display: flex; align-items: center; gap: 32px; }
+
+  .topbar-logo {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 17px;
+    background: var(--silver-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+  }
+
+  .topbar-nav { display: flex; gap: 20px; }
+
+  .topbar-link {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--silver-dim);
+    text-decoration: none;
+    transition: color 0.15s;
+    background: none; border: none; cursor: pointer;
+    padding-bottom: 1px;
+  }
+
+  .topbar-link:hover { color: var(--white); }
+  .topbar-link.active { color: var(--white); border-bottom: 1px solid var(--white); }
+
+  .topbar-right {
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--silver-dim);
+  }
+
+  .pulse-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--success);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+  /* ── MAIN ── */
+  main {
+    padding-top: 72px;
+    padding-bottom: 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-left: 40px;
+    padding-right: 40px;
+    position: relative; z-index: 1;
+  }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    margin-bottom: 36px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .page-title {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(32px, 5vw, 56px);
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    background: var(--silver-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .page-sub {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--silver-dim);
+    margin-top: 8px;
+    max-width: 480px;
+    line-height: 1.6;
+  }
+
+  /* ── INSIGHT CARDS ── */
+  .insight-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .insight-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 22px;
+    animation: slideUp 0.4s cubic-bezier(0.4,0,0.2,1) both;
+  }
+
+  .insight-card:nth-child(2) { animation-delay: 0.06s; }
+  .insight-card:nth-child(3) { animation-delay: 0.12s; }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .insight-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--silver-dim);
+    margin-bottom: 14px;
+  }
+
+  .insight-value {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 36px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    background: var(--silver-grad);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .insight-bar-track {
+    margin-top: 14px;
+    height: 2px;
+    background: var(--surface-3);
+    overflow: hidden;
+  }
+
+  .insight-bar-fill { height: 100%; background: var(--white); transition: width 0.8s cubic-bezier(0.4,0,0.2,1); }
+
+  .insight-note {
+    margin-top: 8px;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--silver-dim);
+    font-style: italic;
+  }
+
+  /* power bars */
+  .power-bars { display: flex; gap: 3px; margin-top: 14px; }
+  .power-bar-seg { width: 4px; height: 14px; background: var(--white); }
+  .power-bar-seg.dim { background: var(--surface-3); }
+
+  /* ── TIMELINE SECTION ── */
+  .timeline-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 28px;
+    margin-bottom: 28px;
+    position: relative;
+  }
+
+  .timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .timeline-title {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  .legend-row { display: flex; gap: 20px; }
+
+  .legend-item {
+    display: flex; align-items: center; gap: 7px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--silver-dim);
+  }
+
+  .legend-dot { width: 7px; height: 7px; border-radius: 50%; }
+
+  /* logic rules box */
+  .rules-box {
+    width: 220px;
+    background: var(--surface-2);
+    border: 1px solid var(--border-bright);
+    padding: 16px;
+    flex-shrink: 0;
+  }
+
+  .rules-title {
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  .rule-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 9px;
+  }
+
+  .rule-row:last-child { border-bottom: none; }
+  .rule-key { color: var(--silver-dim); }
+  .rule-val-big { color: #ffcc88; }
+  .rule-val-throttle { color: var(--danger); }
+  .rule-val-low { color: var(--silver); }
+  .rule-val-unmask { color: #ffcc88; }
+
+  /* gantt */
+  .gantt-time-axis {
+    position: relative;
+    height: 20px;
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--silver-dim);
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+
+  .gantt-wrap {
+    width: 100%;
+    height: 48px;
+    background: var(--surface-2);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  /* step logs */
+  .step-scroll {
+    height: 420px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-right: 8px;
+  }
+
+  .step-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    animation: fadeIn 0.25s cubic-bezier(0.4,0,0.2,1) both;
+    transition: border-color 0.15s;
+  }
+
+  .step-card:hover { border-color: var(--border-bright); }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .step-time {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--white);
+    margin-bottom: 8px;
+    letter-spacing: 0.1em;
+  }
+
+  .step-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  .step-field {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--silver-dim);
+  }
+
+  .step-field span { color: var(--silver); }
+
+  .step-selected {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--success);
+    margin-top: 6px;
+  }
+
+  .step-exec {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: #ffcc88;
+    margin-top: 2px;
+  }
+
+  .step-thermal {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--silver-dim);
+    margin-top: 2px;
+  }
+
+  .throttle { color: var(--danger) !important; }
+
+  /* telemetry footer */
+  .telemetry-footer {
+    position: absolute;
+    bottom: 16px; right: 24px;
+    display: flex; align-items: center; gap: 8px;
+    font-family: var(--mono);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--silver-dim);
+  }
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo">AETAS-OS</div>
+    <nav class="topbar-nav">
+      <a class="topbar-link" href="aa.html">Cluster View</a>
+      <span class="topbar-link">Diagnostics</span>
+      <span class="topbar-link active">Logs</span>
     </nav>
-    </div>
-    <div class="flex items-center gap-4">
-    <div class="hidden lg:flex items-center bg-surface-container px-3 py-1.5 rounded-lg border border-outline-variant/15">
-    </div>
-    </header>
-    <!-- SideNavBar -->
+  </div>
+  <div class="topbar-right">
+    <div class="pulse-dot"></div>
+    Telemetry Stream: Active
+  </div>
+</div>
 
-    <!-- Main Content -->
-    <main class="w-full pt-20 p-8 min-h-screen">
-    <header class="mb-8">
-    <h1 class="text-4xl font-headline font-bold text-on-surface tracking-tight">Execution Timeline Analytics</h1>
-    <p class="text-on-surface-variant mt-2 text-sm max-w-2xl">Real-time telemetry stream of sub-millisecond process scheduling and thermal redistribution logic across core clusters.</p>
-    </header>
-    <section class="glass-panel border-t-2 border-primary/40 rounded-xl p-8 relative shadow-2xl">
-    <div class="flex justify-between items-start mb-10">
+<main>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
     <div>
-    <h2 class="text-lg font-headline font-bold tracking-[0.2em] text-primary">STEP-BY-STEP EXECUTION TIMELINE</h2>
-    <div class="flex items-center gap-4 mt-2">
-    <div class="flex items-center gap-2">
-    <span class="w-3 h-3 rounded-full bg-primary"></span>
-    <span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant">Little Core Cluster</span>
+      <div class="page-title">Execution<br/>Timeline</div>
+      <div class="page-sub">Real-time telemetry of sub-millisecond process scheduling and thermal redistribution logic across core clusters.</div>
     </div>
-    <div class="flex items-center gap-2">
-    <span class="w-3 h-3 rounded-full bg-secondary"></span>
-    <span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant">Big Core Cluster</span>
-    </div>
-    </div>
-    </div>
-    <!-- Decision Logic Box -->
-    <div class="w-64 glass-panel bg-white/5 border border-primary/10 rounded-lg p-4 text-[10px] space-y-2 backdrop-blur-md">
-    <div class="flex items-center gap-2 mb-2 text-primary">
-    <span class="material-symbols-outlined text-sm">psychology</span>
-    <span class="font-bold uppercase tracking-wider">Scheduler Logic Rules</span>
-    </div>
-    <div class="flex justify-between items-center text-on-surface-variant/80 border-b border-outline-variant/10 pb-1">
-    <span>High Load</span>
-    <span class="text-secondary font-mono">-&gt; Big Core</span>
-    </div>
-    <div class="flex justify-between items-center text-on-surface-variant/80 border-b border-outline-variant/10 pb-1">
-    <span>Temp &gt; 85°C</span>
-    <span class="text-error font-mono">-&gt; Throttle</span>
-    </div>
-    <div class="flex justify-between items-center text-on-surface-variant/80 border-b border-outline-variant/10 pb-1">
-    <span>I/O Wait</span>
-    <span class="text-primary font-mono">-&gt; Low Power</span>
-    </div>
-    <div class="flex justify-between items-center text-on-surface-variant/80">
-    <span>Burst Peak</span>
-    <span class="text-secondary font-mono">-&gt; Unmask Core</span>
-    </div>
-    </div>
-    </div>
-    <!-- Mini Gantt Timeline -->
-    <div class="relative w-full">
-        <div id="time-axis" class="relative h-6 text-[10px] font-mono text-on-surface-variant"></div>
+  </div>
 
-        <div id="gantt-container"
-        class="w-full h-32 bg-black/30 rounded-lg relative overflow-hidden">
-    </div>
+  <!-- INSIGHT CARDS -->
+  <div class="insight-grid">
+
+    <div class="insight-card">
+      <div class="insight-label">Core Utilization Efficiency</div>
+      <div class="insight-value" id="utilization-value">—</div>
+      <div class="insight-bar-track"><div class="insight-bar-fill" id="util-bar" style="width:0%"></div></div>
+      <div class="insight-note">Optimal load balancing across efficiency clusters.</div>
     </div>
 
-    <!-- Execution Logs -->
-    <div id="step-container" class="h-[500px] overflow-y-auto no-scrollbar pr-4 space-y-4">
+    <div class="insight-card">
+      <div class="insight-label">Avg. Big Core Temp</div>
+      <div class="insight-value" id="big-temp" style="background:linear-gradient(135deg,#ffddaa,#ff8844);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">—</div>
+      <div class="insight-bar-track"><div class="insight-bar-fill" id="temp-bar" style="width:0%; background: linear-gradient(90deg,#ffcc88,#ff4444)"></div></div>
+      <div class="insight-note">Real-time thermal average across Big cores.</div>
     </div>
-    <!-- Absolute positioned decoration -->
-    <div class="absolute bottom-4 right-8 flex items-center gap-2">
-    <div class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
-    <span class="text-[10px] font-mono text-on-surface-variant tracking-[0.3em] uppercase">Telemetry Stream: Active</span>
+
+    <div class="insight-card">
+      <div class="insight-label">System Power Drain</div>
+      <div class="insight-value" id="power-value">—</div>
+      <div class="power-bars" id="power-bars">
+        <div class="power-bar-seg"></div>
+        <div class="power-bar-seg"></div>
+        <div class="power-bar-seg"></div>
+        <div class="power-bar-seg dim"></div>
+        <div class="power-bar-seg dim"></div>
+        <div class="power-bar-seg dim"></div>
+      </div>
+      <div class="insight-note" id="battery-msg">Real-time power consumption based on core activity.</div>
     </div>
-    </section>
-    <!-- Dynamic Insights Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-    <div class="glass-panel p-6 rounded-lg border border-outline-variant/10">
-    <div class="text-[10px] font-bold uppercase tracking-widest text-primary mb-4">Core Utilization Efficiency</div>
-    <div id="utilization-value" class="text-3xl font-headline font-medium text-on-surface"></div>
-    <div class="mt-4 h-1 bg-surface-container-lowest rounded-full overflow-hidden">
-    <div class="h-full bg-primary w-[94.2%]"></div>
-    </div>
-    <p class="text-[10px] text-on-surface-variant mt-2 italic">Optimal load balancing across efficiency clusters.</p>
-    </div>
-    <div class="glass-panel p-6 rounded-lg border border-outline-variant/10">
-    <div class="text-[10px] font-bold uppercase tracking-widest text-secondary mb-4">Avg. Big Core Temp</div>
-    <div id="big-temp" class="text-3xl font-headline font-medium text-secondary"></div>
-    <div class="mt-4 h-1 bg-surface-container-lowest rounded-full overflow-hidden">
-    <div id="temp-bar" class="h-full bg-secondary"></div>
-    </div>
-    <p class="text-[10px] text-on-surface-variant mt-2 italic">
-    Real-time thermal average across Big cores.
-    </p></div>
-    <div class="glass-panel p-6 rounded-lg border border-outline-variant/10">
-    <div class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-4">System Power Drain</div>
-    <div id="power-value" class="text-3xl font-headline font-medium text-on-surface"></div>
-    <div class="mt-4 flex gap-1">
-    <div class="h-4 w-1 bg-primary"></div>
-    <div class="h-4 w-1 bg-primary"></div>
-    <div class="h-4 w-1 bg-primary"></div>
-    <div class="h-4 w-1 bg-primary/40"></div>
-    <div class="h-4 w-1 bg-primary/40"></div>
-    <div class="h-4 w-1 bg-primary/40"></div>
-    <p id="battery-msg" class="text-[10px] text-on-surface-variant mt-2 italic">
-    Real-time power consumption based on core activity.
-    </p>
-    </div>
-    </div>
-    </main>
-    <script>
-    async function runSimulation() {
 
-                const data = JSON.parse(localStorage.getItem("simulationData"));
+  </div>
 
-            if (!data) {
-                alert("No simulation data found. Run simulation first.");
-                return;
-            }
+  <!-- TIMELINE SECTION -->
+  <div class="timeline-section">
 
-        const container = document.getElementById("step-container");
-        container.innerHTML = "";
-
-
-        function renderStep(log) {
-
-            let predictedHTML = Object.entries(log.predicted_map)
-                .map(([k,v]) => `<div>${k} = ${v}</div>`)
-                .join("");
-
-            let scoreHTML = Object.entries(log.score_map)
-                .map(([k,v]) => `
-                    <div class="${k === log.selected ? 'text-primary font-bold' : ''}">
-                        ${k} = ${v} ${k === log.selected ? '← selected' : ''}
-                    </div>
-                `).join("");
-
-            return `
-            <div class="p-4 rounded-lg bg-surface-container-high/40 border border-outline-variant/10 font-mono text-xs space-y-1 animate-fadeIn">
-
-                <div class="text-primary">⏱ t = ${log.time}</div>
-
-                <div>Ready Queue: ${log.ready_queue.join(", ")}</div>
-
-                <div class="mt-1">Predicted Burst:</div>
-                ${predictedHTML}
-
-                <div class="mt-1">Effective Score:</div>
-                ${scoreHTML}
-
-                <div class="mt-2 text-green-400">➡ Selected: ${log.selected}</div>
-
-                <div>Core Decision: ${log.core_reason}</div>
-
-                <div>
-                    Thermal:
-                    BIG ${log.thermal.big}°C |
-                    LITTLE ${log.thermal.little}°C
-                    → ${log.thermal.status}
-                </div>
-
-                <div class="text-secondary">
-                    ➡ Executing ${log.selected} @ ${log.freq} GHz (${log.core})
-                </div>
-
-            </div>
-            `;
-        }
-    function renderGroupedStep(log) {
-        return `
-        <div class="p-4 rounded-lg bg-surface-container-high/40 border border-outline-variant/10 font-mono text-xs animate-fadeIn">
-
-            <div class="text-primary">
-                ⏱ t = ${log.time} → ${log.end}
-            </div>
-
-            <div>Process: ${log.selected}</div>
-
-            <div>
-                Core Cluster: ${log.core}
-            </div>
-
-            <div>
-                Thermal:
-                BIG ${log.thermal.big}°C |
-                LITTLE ${log.thermal.little}°C
-            </div>
-
+    <div class="timeline-header">
+      <div>
+        <div class="timeline-title">Step-by-Step Execution Timeline</div>
+        <div class="legend-row">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#ffffff"></div>
+            Little Core Cluster
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:#ffcc88"></div>
+            Big Core Cluster
+          </div>
         </div>
-        `;
-    }
+      </div>
+      <div class="rules-box">
+        <div class="rules-title">Scheduler Logic</div>
+        <div class="rule-row"><span class="rule-key">High Load</span><span class="rule-val-big">→ Big Core</span></div>
+        <div class="rule-row"><span class="rule-key">Temp &gt; 85°C</span><span class="rule-val-throttle">→ Throttle</span></div>
+        <div class="rule-row"><span class="rule-key">I/O Wait</span><span class="rule-val-low">→ Low Power</span></div>
+        <div class="rule-row"><span class="rule-key">Burst Peak</span><span class="rule-val-unmask">→ Unmask Core</span></div>
+      </div>
+    </div>
 
-        // -------- GROUP LOGS ONCE --------
-        let prev = null;
+    <!-- Gantt -->
+    <div class="gantt-time-axis" id="time-axis"></div>
+    <div class="gantt-wrap" id="gantt-container"></div>
 
-        function isSameStep(a, b) {
-    return a.selected === b.selected;
-}
+    <!-- Step Logs -->
+    <div class="step-scroll" id="step-container"></div>
 
-        let groupedLogs = [];
+    <div class="telemetry-footer">
+      <div class="pulse-dot"></div>
+      Telemetry Stream: Active
+    </div>
 
-for (let i = 0; i < data.step_logs.length; i++) {
-    let current = data.step_logs[i];
+  </div>
 
+</main>
+
+<script>
+async function runSimulation() {
+  const data = JSON.parse(localStorage.getItem("simulationData"));
+  if (!data) {
+    document.getElementById("step-container").innerHTML =
+      `<div style="font-family:var(--mono);font-size:10px;color:var(--silver-dim);padding:20px;">
+        No simulation data found. Run the simulation from the Cluster View first.
+      </div>`;
+    return;
+  }
+
+  // ── GROUP LOGS ──
+  let prev = null;
+  let groupedLogs = [];
+
+  for (let i = 0; i < data.step_logs.length; i++) {
+    const current = data.step_logs[i];
     if (!prev) {
-        prev = { ...current, end: current.time };
-    } else if (isSameStep(prev, current)) {
-        prev.end = current.time;
+      prev = { ...current, end: current.time };
+    } else if (prev.selected === current.selected) {
+      prev.end = current.time;
     } else {
-        groupedLogs.push(prev);
-        prev = { ...current, end: current.time };
+      groupedLogs.push(prev);
+      prev = { ...current, end: current.time };
     }
+  }
+  if (prev) groupedLogs.push(prev);
+
+  // ── INSIGHT CARDS ──
+  const power = calculatePower(groupedLogs);
+  document.getElementById("power-value").textContent = power + " W";
+
+  const avgTemp = calculateBigCoreTemp(groupedLogs);
+  const tempPct = Math.min((avgTemp / 100) * 100, 100);
+  document.getElementById("temp-bar").style.width = tempPct + "%";
+  document.getElementById("big-temp").textContent = avgTemp + "°C";
+
+  const efficiency = calculateUtilization(groupedLogs);
+  document.getElementById("utilization-value").textContent = efficiency + "%";
+  document.getElementById("util-bar").style.width = efficiency + "%";
+
+  // power bar segments
+  const powerNum = parseFloat(power);
+  const segs = document.querySelectorAll(".power-bar-seg");
+  const activeCount = Math.min(Math.round((powerNum / 50) * segs.length), segs.length);
+  segs.forEach((s, i) => {
+    s.classList.toggle("dim", i >= activeCount);
+  });
+
+  // ── GANTT ──
+  renderGantt(groupedLogs);
+  renderTimeAxis(groupedLogs);
+
+  // ── STEP LOGS ──
+  const container = document.getElementById("step-container");
+  container.innerHTML = "";
+  let i = 0;
+
+  const interval = setInterval(() => {
+    if (i >= groupedLogs.length) { clearInterval(interval); return; }
+    container.innerHTML += renderGroupedStep(groupedLogs[i]);
+    container.scrollTop = container.scrollHeight;
+    i++;
+  }, 350);
 }
-if (prev) groupedLogs.push(prev);
-        let power = calculatePower(groupedLogs);
 
-    document.getElementById("power-value").innerText = power + " W";
-        let avgTemp = calculateBigCoreTemp(groupedLogs);
-        let percent = (avgTemp / 100) * 100; // scale to %
+function renderGroupedStep(log) {
+  const isThrottled = log.thermal.status === "THROTTLED";
+  const coreColor = log.core === "Big" ? "#ffcc88" : "#ffffff";
+  return `
+    <div class="step-card">
+      <div class="step-time">⏱ t = ${log.time} → ${log.end}</div>
+      <div class="step-row">
+        <div class="step-field">Process: <span>${log.selected}</span></div>
+        <div class="step-field">Core: <span style="color:${coreColor}">${log.core} Cluster</span></div>
+        <div class="step-field">Freq: <span>${log.freq} GHz</span></div>
+      </div>
+      <div class="step-selected">↗ Selected: ${log.selected} — ${log.core_reason || ''}</div>
+      <div class="step-thermal ${isThrottled ? 'throttle' : ''}">
+        Thermal → BIG ${log.thermal.big}°C | LITTLE ${log.thermal.little}°C
+        ${isThrottled ? ' ⚠ THROTTLED' : ''}
+      </div>
+    </div>`;
+}
 
-    document.getElementById("temp-bar").style.width = percent + "%";
+function renderGantt(groupedLogs) {
+  const gantt = document.getElementById("gantt-container");
+  gantt.innerHTML = "";
+  const minTime = groupedLogs[0].time;
+  const maxTime = groupedLogs[groupedLogs.length - 1].end;
+  const totalTime = maxTime - minTime + 1;
 
-    document.getElementById("big-temp").innerText = avgTemp + "°C";
-        let efficiency = calculateUtilization(groupedLogs);
+  groupedLogs.forEach(log => {
+    const startPct = ((log.time - minTime) / totalTime) * 100;
+    const widthPct = ((log.end - log.time + 1) / totalTime) * 100;
+    const isBig = log.core === "Big";
 
-    document.getElementById("utilization-value").innerText = efficiency + "%";
-        renderGantt(groupedLogs);
-        renderTimeAxis(groupedLogs);
+    const block = document.createElement("div");
+    block.style.cssText = `
+      position: absolute;
+      left: ${startPct}%;
+      width: ${widthPct}%;
+      height: 100%;
+      top: 0;
+      min-width: 6px;
+      background: ${isBig ? '#ffcc88' : 'rgba(255,255,255,0.85)'};
+      border-right: 1px solid #080808;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: var(--mono);
+      font-size: 9px;
+      color: #080808;
+      font-weight: 500;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      transition: opacity 0.15s;
+    `;
+    if (widthPct > 2) block.textContent = log.selected;
+    block.onmouseenter = () => block.style.opacity = '0.7';
+    block.onmouseleave = () => block.style.opacity = '1';
+    gantt.appendChild(block);
+  });
+}
 
-        // -------- RENDER STEP BY STEP --------
-        let i = 0;
+function renderTimeAxis(groupedLogs) {
+  const axis = document.getElementById("time-axis");
+  axis.innerHTML = "";
+  const minTime = groupedLogs[0].time;
+  const maxTime = groupedLogs[groupedLogs.length - 1].end;
+  const totalTime = maxTime - minTime + 1;
 
-        let interval = setInterval(() => {
+  let times = new Set();
+  groupedLogs.forEach((log, i) => { if (i % 3 === 0) times.add(log.time); });
 
-            if (i >= groupedLogs.length) {
-                clearInterval(interval);
-                return;
-            }
+  Array.from(times).sort((a,b) => a-b).forEach(t => {
+    const pos = ((t - minTime) / totalTime) * 100;
+    const label = document.createElement("div");
+    label.textContent = `t=${t}`;
+    label.style.cssText = `
+      position: absolute;
+      left: ${pos}%;
+      transform: translateX(-50%);
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--silver-dim);
+      letter-spacing: 0.08em;
+    `;
+    axis.appendChild(label);
+  });
+}
 
-            container.innerHTML += renderGroupedStep(groupedLogs[i]);
+function calculateUtilization(groupedLogs) {
+  const minTime = groupedLogs[0].time;
+  const maxTime = groupedLogs[groupedLogs.length - 1].end;
+  const totalTime = maxTime - minTime + 1;
+  let busyTime = 0;
+  groupedLogs.forEach(log => { busyTime += (log.end - log.time + 1); });
+  return ((busyTime / totalTime) * 100).toFixed(1);
+}
 
-            container.scrollTop = container.scrollHeight;
+function calculateBigCoreTemp(groupedLogs) {
+  let totalTemp = 0, count = 0;
+  groupedLogs.forEach(log => {
+    if (log.core === "Big") { totalTemp += log.thermal.big; count++; }
+  });
+  return count === 0 ? "0.0" : (totalTemp / count).toFixed(1);
+}
 
-            i++;
+function calculatePower(groupedLogs) {
+  let totalEnergy = 0;
+  groupedLogs.forEach(log => {
+    const duration = log.end - log.time + 1;
+    totalEnergy += (log.freq * log.freq) * duration;
+  });
+  return (totalEnergy / 10).toFixed(1);
+}
 
-        }, 400);
-        }
-
-        function renderGantt(groupedLogs) {
-        const gantt = document.getElementById("gantt-container");
-        gantt.innerHTML = "";
-
-    let minTime = groupedLogs[0].time;
-    let maxTime = groupedLogs[groupedLogs.length - 1].end;
-    let totalTime = maxTime - minTime + 1;
-        groupedLogs.forEach(log => {
-
-            let startPercent = ((log.time - minTime) / totalTime) * 100;
-    let widthPercent = ((log.end - log.time + 1) / totalTime) * 100;
-
-            let color = log.core === "Big" ? "bg-secondary" : "bg-primary";
-
-            let block = document.createElement("div");
-
-            block.className = `${color} text-black text-[10px] font-mono flex items-center justify-center absolute`;
-
-            block.style.left = startPercent + "%";   // 🔥 KEY FIX
-            block.style.width = widthPercent + "%";
-            block.style.height = "100%";   // full height
-    block.style.top = "0";         // no vertical shift
-    block.style.transform = "none";
-    block.style.minWidth = "8px";
-    block.style.borderRight = "1px solid #061423";
-
-            if (widthPercent > 2) {
-                block.innerText = log.selected;
-            } else {
-                block.innerText = "";
-            }
-            block.style.fontSize = "9px";
-            block.style.whiteSpace = "nowrap";
-            block.style.overflow = "hidden";
-            block.style.textOverflow = "ellipsis";
-
-            gantt.appendChild(block);
-        });
-    }
-    function renderTimeAxis(groupedLogs) {
-        const axis = document.getElementById("time-axis");
-        axis.innerHTML = "";
-
-        let minTime = groupedLogs[0].time;
-        let maxTime = groupedLogs[groupedLogs.length - 1].end;
-        let totalTime = maxTime - minTime + 1;
-
-        // 🔥 Use REAL execution points
-        let times = new Set();
-
-        groupedLogs.forEach((log, i) => {
-    if (i % 3 === 0) times.add(log.time);
-});
-
-        let sortedTimes = Array.from(times).sort((a,b) => a-b);
-
-        sortedTimes.forEach(t => {
-
-            let pos = ((t - minTime) / totalTime) * 100;
-
-            let label = document.createElement("div");
-
-            label.innerText = `t=${t}`;
-            label.style.position = "absolute";
-            label.style.left = pos + "%";
-            label.style.fontSize = "10px";
-            label.style.transform = "translateX(-50%)";
-
-            axis.appendChild(label);
-        });
-    }
-    function calculateUtilization(groupedLogs) {
-
-        let minTime = groupedLogs[0].time;
-        let maxTime = groupedLogs[groupedLogs.length - 1].end;
-
-        let totalTime = maxTime - minTime + 1;
-
-        let busyTime = 0;
-
-        groupedLogs.forEach(log => {
-            busyTime += (log.end - log.time + 1);
-        });
-
-        let efficiency = (busyTime / totalTime) * 100;
-
-        return efficiency.toFixed(1);
-    }
-    function calculateBigCoreTemp(groupedLogs) {
-
-        let totalTemp = 0;
-        let count = 0;
-
-        groupedLogs.forEach(log => {
-            if (log.core === "Big") {
-                totalTemp += log.thermal.big;
-                count++;
-            }
-        });
-
-        if (count === 0) return 0;
-
-        return (totalTemp / count).toFixed(1);
-    }
-    function calculatePower(groupedLogs) {
-
-        let totalEnergy = 0;
-
-        groupedLogs.forEach(log => {
-            let duration = log.end - log.time + 1;
-
-            let freq = log.freq; // already numeric
-
-            totalEnergy += (freq * freq) * duration;
-        });
-
-        // scale to "Watts" (visual)
-        let power = totalEnergy / 10;
-
-        return power.toFixed(1);
-    }
-    runSimulation();
-    </script>
-    </body></html>
+runSimulation();
+</script>
+</body>
+</html>
