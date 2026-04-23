@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600;700&amp;family=Roboto+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+
 <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
@@ -85,6 +86,16 @@
         .no-scrollbar::-webkit-scrollbar { display: none; }
     </style>
 </head>
+<script>
+let useLiveMode = true;
+
+// ✅ PUT IT HERE (GLOBAL)
+function setMode(mode) {
+    useLiveMode = mode;
+
+    console.log("MODE SWITCHED:", mode ? "LIVE" : "MANUAL");
+}
+</script>
 <body class="bg-surface text-on-surface overflow-hidden">
 <!-- Top Navigation Anchor (Based on JSON) -->
 <header class="bg-[#061423] text-[#00daf3] font-['Space_Grotesk'] tracking-tight flex justify-between items-center w-full px-6 py-3 h-16 fixed top-0 z-50">
@@ -94,6 +105,14 @@
 <a class="text-[#00daf3] border-b-2 border-[#00daf3] pb-1" href="#">Cluster View</a>
 <a class="text-slate-400 hover:bg-[#1e2b3b] transition-colors px-2 py-1 rounded" href="#">Diagnostics</a>
 <a class="text-slate-400 hover:bg-[#1e2b3b] transition-colors px-2 py-1 rounded" href="zsecond.html">Logs</a>
+<div class="flex items-center gap-8">
+    <button onclick="setMode(false)" class="text-[#00ff00] pb-1 hover:bg-[#1e2b3b] transition-colors px-2 py-1 rounded">
+        Manual
+    </button>
+    <button onclick="setMode(true)" class="text-[#FF0000] pb-1 hover:bg-[#1e2b3b] transition-colors px-2 py-1 rounded">
+        Automatic
+    </button>
+</div>
 </nav>
 </div>
 </header>
@@ -464,13 +483,24 @@ async function runSimulation() {
         console.log("INPUT:", processes);
 
         // ---------------- API CALL ----------------
-        const res = await fetch("http://127.0.0.1:8000/simulate", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(processes)
-        });
+        let res;
+
+if (useLiveMode) {
+    res = await fetch("http://127.0.0.1:8000/simulate-live");
+} else {
+    res = await fetch("http://127.0.0.1:8000/simulate", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(processes)
+    });
+}
+
+if (!res.ok) {
+    throw new Error("API failed: " + res.status);
+}
+
 
         const data = await res.json();
                 // store result globally
@@ -662,7 +692,7 @@ data.logs.forEach(log => {
 
 // ✅ SORT BY PID
 let sorted = Object.values(mapping).sort((a, b) => {
-    return Number(a.pid) - Number(b.pid);
+    return parseInt(a.pid.split("_")[1]) - parseInt(b.pid.split("_")[1]);
 });
 
 
@@ -677,7 +707,7 @@ let logInterval = setInterval(() => {
 
     logTable.innerHTML += `
     <tr class="hover:bg-surface-container-high transition-colors">
-        <td class="px-6 py-4 text-primary">P${log.pid}</td>
+        <td class="px-6 py-4 text-primary">${log.pid} (${log.name})</td   >
         <td class="px-6 py-4">
             ${log.core === "Big" ? "BIG_CORE_0" : "LITTLE_CORE_4"}
         </td>
