@@ -212,144 +212,124 @@ def sjf(processes):
 # 🔥 -------- IMPROVED AETAS --------
 def aetas(processes):
     import heapq
-    import time
-    start_time = time.time()
 
-    current_time,done = 0, 0
+    current_time = 0
+    done = 0
+    n = len(processes)
+
     energy_total = 0
-
     thermal = []
+    logs = []
+    step_logs = []
+
     usage = {"Big": 0, "Little": 0}
 
-    logs = []        # existing dashboard logs
-    step_logs = []   # NEW step-by-step logs
+    big_temp = 32.0
+    little_temp = 28.0
 
-    big_temp, little_temp = 30, 30
+    # sort once
+    processes.sort(key=lambda x: x.arrival)
+    i = 0
 
-    # initialize predicted burst
-    for p in processes:
-        p.predicted = p.burst
+    ready = []
 
-    max_time = 100 # reduce
+    while done < n:
 
-    while done < len(processes) and current_time < max_time:
-
-        ready = [p for p in processes if p.arrival <= current_time and not p.completed]
-        if time.time() - start_time > 2:
-            print("⚠️ FORCE BREAK (too slow)")
-            break
-
-        if not ready:
-            current_time += 1
-            continue
-
-        # safety: break if stuck
-        if current_time> 300:
-            print("⚠️ Breaking early (possible bad input)")
-            break
-        # cooling
-        big_temp = max(25, big_temp - 1)
-        little_temp = max(25, little_temp - 1)
-
-        ready = [p for p in processes if p.arrival <= current_time and not p.completed]
-
-        if not ready:
-            current_time += 1
-            continue
-
-        # -------- SELECTION --------
-        heap = []
-
-        for p in ready:
+        # add arrived processes once
+        while i < n and processes[i].arrival <= current_time:
+            p = processes[i]
             p.predicted = p.burst
+            heapq.heappush(ready, (p.predicted, p.pid, p))
+            i += 1
 
-            waiting = current_time - p.arrival
-            effective_wait = waiting + (current_time* 0.05)
+        if not ready:
+            current_time += 1
+            continue
 
-            heapq.heappush(heap, (p.predicted + effective_wait, p.pid, p))
+        _, _, p = heapq.heappop(ready)
 
-        _, _, p = heapq.heappop(heap)
+        wait = current_time - p.arrival
 
-        # -------- CORE SELECTION --------
-        if p.predicted >= 7:
+        # fairness aging
+        effective = max(1, p.remaining - wait * 0.15)
+
+        # smart core select
+        if effective >= 8:
             core = "Big"
             freq = 2.0
-            reason = "High load → Big Core"
-
-        elif p.predicted >= 5:
+        elif effective >= 5:
             core = "Big"
-            freq = 1.8
-            reason = "Medium load → Big Core (low freq)"
-
+            freq = 1.6
         else:
-            core = "Little"
-            freq = 1.2
-            reason = "Low load → Little Core"
-
-        # thermal throttle after decision
-        if core == "Big" and big_temp >= 85:
             core = "Little"
             freq = 1.0
-            reason = "Thermal throttle → Little Core"
 
-        # update temps + usage
+        # thermal throttle
+        if big_temp > 82 and core == "Big":
+            core = "Little"
+            freq = 1.0
+
+        # adaptive quantum
+        quantum = min(3, p.remaining)
+
+        # execute burst chunk
+        p.remaining -= quantum
+        current_time += quantum
+
+        # energy
+        power = (freq ** 2) * quantum
+        energy_total += power
+
+        # thermal realistic
         if core == "Big":
-            big_temp += 2
-            usage["Big"] += 1
-            temp = big_temp
+            big_temp += 0.8 * power - 0.12 * (big_temp - 30)
+            usage["Big"] += quantum
         else:
-            little_temp += 1
-            usage["Little"] += 1
-            temp = little_temp
+            little_temp += 0.45 * power - 0.10 * (little_temp - 28)
+            usage["Little"] += quantum
 
-        # 🔥 -------- THERMAL LOGGING (was missing!) --------
+        # passive cooling
+        big_temp = max(30, big_temp - 0.4)
+        little_temp = max(28, little_temp - 0.3)
+
         thermal.append({
             "time": current_time,
             "big": round(big_temp, 1),
             "little": round(little_temp, 1)
         })
-
-        # 🔥 -------- STEP LOGGING --------
-        ready_ids = [f"P_{x.pid}" for x in ready]
-
-        predicted_map = {
-            f"P_{x.pid}": round(x.predicted, 2) for x in ready
-        }
-
-        score_map = {}
-        for x in ready:
-            waiting = current_time - x.arrival
-            effective_wait = waiting + (current_time * 0.05)
-            score_map[f"P_{x.pid}"] = round(x.predicted + effective_wait, 2)
-
         step_logs.append({
-            "time": current_time,
-            "ready_queue": ready_ids,
-            "predicted_map": predicted_map,
-            "score_map": score_map,
-            "selected": f"P_{p.pid}",
+    "time": current_time,
 
-            "core": core,
-            "freq": freq,
+    "ready_queue": [f"P_{x[2].pid}" for x in ready] + [f"P_{p.pid}"],
 
-            "core_reason": reason,
+    "predicted_map": {
+        f"P_{p.pid}": round(p.remaining, 2)
+    },
 
-            "thermal": {
-                "big": round(big_temp, 1),
-                "little": round(little_temp, 1),
-                "status": "THROTTLED" if temp > 85 else "OK"
-            }
-        })
+    "score_map": {
+        f"P_{p.pid}": round(effective, 2)
+    },
 
-        # -------- EXECUTION --------
-        energy_total += energy(freq, 1)
-        p.remaining -= 1
+    "selected": f"P_{p.pid}",
 
-        # -------- COMPLETION --------
+    "core": core,
+    "freq": freq,
+
+    "core_reason":
+        "Thermal throttle → Little Core"
+        if big_temp > 82 and core == "Little"
+        else f"Adaptive scheduling → {core} Core",
+
+    "thermal": {
+        "big": round(big_temp, 1),
+        "little": round(little_temp, 1),
+        "status": "THROTTLED" if big_temp > 82 else "OK"
+    }
+})
         if p.remaining <= 0:
             p.completed = True
             done += 1
-            p.turnaround =current_time - p.arrival + 1
+            p.turnaround = current_time - p.arrival
             p.waiting = p.turnaround - p.burst
 
             logs.append({
@@ -358,12 +338,10 @@ def aetas(processes):
                 "core": core,
                 "freq": f"{freq} GHz"
             })
-
-        current_time += 1
+        else:
+            heapq.heappush(ready, (p.remaining, p.pid, p))
 
     return processes, energy_total, thermal, usage, logs, step_logs
-
-
 # ---------- API ----------
 @app.post("/simulate")
 def simulate(data: List[ProcessInput]):
